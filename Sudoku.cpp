@@ -1,4 +1,4 @@
-#include <iostream>
+#include <bits/stdc++.h>
 #include <vector>
 using namespace std;
 
@@ -11,9 +11,9 @@ void print(vector<vector<char>> board){
     }
 }
 
-bool CompleteltyFilled(vector<vector<char>> board){
-    for(int i = 0; i < 9; i++){
-        for(int j = 0; j < 9; j++){
+bool CompleteltyFilled(vector<vector<char>> board,int n){
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
             if(board[i][j] == '0')
                 return false;
         }
@@ -21,20 +21,21 @@ bool CompleteltyFilled(vector<vector<char>> board){
     return true;
 }
 
-bool CanbePlaced(vector<vector<char>> board,int row,int col,char num){
-    for(int i=0;i<9;i++){
+bool CanbePlaced(vector<vector<char>> board,int row,int col,char num,int n){
+    for(int i=0;i<n;i++){
         if(board[row][i] == num){
             return false;
         }
     }
-    for(int i = 0; i < 9; i++){
+    for(int i = 0; i < n; i++){
         if(board[i][col] == num)
             return false;
     }
-    int rs = row-row%3;
-    int cs = col - col%3;
-    for(int i=rs;i<rs+2;i++){
-        for(int j=cs;j<cs+2;j++){
+    int r = sqrt(n);
+    int rs = row-row%r;
+    int cs = col - col%r;
+    for(int i=rs;i<rs+r-1;i++){
+        for(int j=cs;j<cs+r-1;j++){
             if(board[i][j] == num){
                 return false;
             }
@@ -43,17 +44,17 @@ bool CanbePlaced(vector<vector<char>> board,int row,int col,char num){
     return true;
 }
 
-bool sudoku(vector<vector<char>> &board){
-    if(CompleteltyFilled(board))
+bool sudoku(vector<vector<char>> &board,int n){
+    if(CompleteltyFilled(board,n))
         return true;
-    for(int i = 0; i < 9; i++){
-        for(int j = 0; j < 9; j++){
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
             if(board[i][j] == '0'){
-                for(int k = 1; k <= 9; k++){
+                for(int k = 1; k <= n; k++){
                     char ch = '0' + k;
-                    if(CanbePlaced(board, i, j, ch)){
+                    if(CanbePlaced(board, i, j, ch,n)){
                         board[i][j] = ch;
-                        bool flag = sudoku(board);
+                        bool flag = sudoku(board,n);
                         if(flag)
                             return true;
                         else
@@ -67,20 +68,22 @@ bool sudoku(vector<vector<char>> &board){
     return true;
 }
 
-bool sudokuSolver(vector<vector<char>> &board){
-    return sudoku(board);
+bool sudokuSolver(vector<vector<char>> &board,int n){
+    return sudoku(board,n);
 }
 
 int main() {
-	vector<vector<char>> board(9);
+    int n;
+    cin>>n;
+	vector<vector<char>> board(n);
     char x;
-    for(int i=0;i<9;i++){
-        for(int j=0;j<9;j++){
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
             cin>>x;
             board[i].push_back(x);
         }
     }
-    bool flag = sudokuSolver(board);
+    bool flag = sudokuSolver(board,n);
     if(flag){
         print(board);
     }
